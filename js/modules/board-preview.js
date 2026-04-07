@@ -5,6 +5,7 @@ const MANUAL_POINT_COUNT = 4;
 export function createBoardPreview({
   autoDetectButton,
   boardCanvas,
+  debugElement,
   helpElement,
   imageStore,
   manualDrawButton,
@@ -40,6 +41,7 @@ export function createBoardPreview({
     if (!snapshot.image) {
       setStatus("Upload an image to start board detection.", "default");
       summaryElement.textContent = "No board outline detected yet.";
+      debugElement.textContent = "No detection debug yet.";
       renderScene();
       return;
     }
@@ -162,6 +164,7 @@ export function createBoardPreview({
       state.renderRect = null;
       setStatus(detection.status, "default");
       summaryElement.textContent = "Auto detection could not confirm a board outline.";
+      debugElement.textContent = formatDetectionDebug(detection);
       updateControls();
       renderScene();
       return;
@@ -170,6 +173,7 @@ export function createBoardPreview({
     state.detection = detection;
     state.mode = "animating";
     summaryElement.textContent = buildSummary("Auto outline ready.", detection);
+    debugElement.textContent = formatDetectionDebug(detection);
     await playExpansionPreview(detection.expansionSteps);
     state.renderRect = null;
     state.renderCorners = detection.corners;
@@ -395,6 +399,72 @@ function toImagePoint(event, canvas, view) {
 function buildSummary(prefix, detection) {
   const confidence = Math.round(detection.confidence * 100);
   return `${prefix} Confidence ${confidence}%.`;
+}
+
+function formatDetectionDebug(detection) {
+  if (!detection?.debugMeta) {
+    return detection?.status ?? "No detection debug yet.";
+  }
+
+  const { bounds, failure, xAxis, xGrid, yAxis, yGrid } = detection.debugMeta;
+
+  if (failure) {
+    return [
+      `status: ${detection.status}`,
+      `confidence: ${Math.round(detection.confidence * 100)}%`,
+      formatAxisDebug("xAxis", xAxis),
+      formatAxisDebug("yAxis", yAxis),
+    ].join("\n\n");
+  }
+
+  return [
+    `status: ${detection.status}`,
+    `confidence: ${Math.round(detection.confidence * 100)}%`,
+    `bounds: left=${round(bounds.left)} top=${round(bounds.top)} right=${round(bounds.right)} bottom=${round(bounds.bottom)}`,
+    `xGrid: count=${xGrid.lineCount} spacing=${round(xGrid.spacing)} start=${round(xGrid.start)} end=${round(xGrid.end)}`,
+    `xLines: ${xGrid.lines.map((value) => round(value)).join(", ")}`,
+    formatAxisDebug("xAxis", xAxis),
+    `yGrid: count=${yGrid.lineCount} spacing=${round(yGrid.spacing)} start=${round(yGrid.start)} end=${round(yGrid.end)}`,
+    `yLines: ${yGrid.lines.map((value) => round(value)).join(", ")}`,
+    formatAxisDebug("yAxis", yAxis),
+  ].join("\n");
+}
+
+function round(value) {
+  return Math.round(value * 10) / 10;
+}
+
+function formatAxisDebug(label, axis) {
+  if (!axis) {
+    return `${label}: none`;
+  }
+
+  const lines = [
+    `${label}: spacing=${axis.spacing ?? "n/a"} coverage=${axis.coverage ?? "n/a"}`,
+    `${label} peaks: ${
+      axis.clusters?.length
+        ? axis.clusters.map((cluster) => cluster.position).join(", ")
+        : "none"
+    }`,
+    `${label} run: ${
+      axis.run
+        ? `${axis.run.positions.join(", ")} (observed=${axis.run.observedLines})`
+        : "none"
+    }`,
+  ];
+
+  if (axis.rejectedMarginCandidates?.length) {
+    lines.push(
+      `${label} rejected: ${axis.rejectedMarginCandidates
+        .map(
+          (candidate) =>
+            `${candidate.path}:${candidate.lineCount}[${candidate.firstMargin}/${candidate.lastMargin}]`,
+        )
+        .join(" | ")}`,
+    );
+  }
+
+  return lines.join("\n");
 }
 
 function wait(duration) {

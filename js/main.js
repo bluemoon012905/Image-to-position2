@@ -10,6 +10,7 @@ const imageStore = createImageStore({
 createBoardPreview({
   autoDetectButton: document.querySelector("#auto-detect-button"),
   boardCanvas: document.querySelector("#board-canvas"),
+  debugElement: document.querySelector("#detector-debug"),
   helpElement: document.querySelector("#board-detection-help"),
   imageStore,
   manualDrawButton: document.querySelector("#manual-draw-button"),
