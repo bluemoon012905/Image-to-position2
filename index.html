@@ -9,12 +9,12 @@
   <body>
     <main class="app-shell">
       <section class="hero">
-        <p class="eyebrow">Image Upload</p>
-        <h1>Load a board image</h1>
+        <p class="eyebrow">Browser-Only Image To SGF</p>
+        <h1>Detect, correct, and export a Go position</h1>
         <p class="hero-copy">
-          Drop in a screenshot or photo of a board position. This stripped-down
-          view keeps only the upload and preview flow so the detection logic can
-          be rebuilt cleanly.
+          Upload an image, inspect the automatic pipeline, correct the board if
+          needed, and export an SGF setup position. Everything runs locally in
+          the browser with manual fallback always available.
         </p>
       </section>
 
@@ -58,8 +58,20 @@
           <section class="board-panel" aria-labelledby="board-panel-title">
             <div class="board-panel__header">
               <div>
-                <p class="board-panel__eyebrow">Preview</p>
-                <h2 id="board-panel-title">Uploaded image</h2>
+                <p class="board-panel__eyebrow">Source Image</p>
+                <h2 id="board-panel-title">Board preview and corner overlay</h2>
+              </div>
+
+              <div class="toolbar">
+                <button class="board-button" id="auto-detect-button" type="button">
+                  Auto detect
+                </button>
+                <button class="board-button board-button--ghost" id="manual-corners-button" type="button">
+                  Manual corners
+                </button>
+                <button class="board-button board-button--ghost" id="clear-corners-button" type="button">
+                  Clear corners
+                </button>
               </div>
             </div>
 
@@ -74,16 +86,76 @@
 
             <div class="board-panel__footer">
               <p class="board-panel__status" id="preview-status">
-                Upload an image to preview it here.
+                Upload an image to begin automatic detection.
               </p>
               <p class="board-panel__help" id="preview-help">
-                The detection pipeline has been removed from this build.
+                Automatic detection is layered. If confidence is low, switch to
+                manual corners and continue editing.
               </p>
+            </div>
+          </section>
+
+          <section class="editor-panel" aria-labelledby="editor-panel-title">
+            <div class="editor-panel__header">
+              <div>
+                <p class="board-panel__eyebrow">Board Model</p>
+                <h2 id="editor-panel-title">Editable position</h2>
+              </div>
+
+              <div class="toolbar">
+                <label class="field">
+                  <span class="field__label">Board size</span>
+                  <select class="field__control" id="board-size-select">
+                    <option value="auto">Auto</option>
+                    <option value="9">9x9</option>
+                    <option value="13">13x13</option>
+                    <option value="19">19x19</option>
+                  </select>
+                </label>
+                <button class="board-button board-button--ghost" id="clear-stones-button" type="button">
+                  Clear edits
+                </button>
+                <button class="board-button" id="export-sgf-button" type="button">
+                  Export SGF
+                </button>
+              </div>
+            </div>
+
+            <div class="editor-grid">
+              <div class="editor-board-wrap">
+                <canvas
+                  class="editor-board"
+                  id="editor-canvas"
+                  width="720"
+                  height="720"
+                ></canvas>
+              </div>
+
+              <div class="editor-meta">
+                <p class="info-panel__label">Pipeline summary</p>
+                <p class="info-panel__status" id="pipeline-summary">
+                  Waiting for an image.
+                </p>
+
+                <p class="info-panel__label">Board state</p>
+                <p class="info-panel__status" id="board-state-summary">
+                  No board state yet.
+                </p>
+
+                <p class="info-panel__label">Exported SGF</p>
+                <textarea
+                  class="output-box"
+                  id="sgf-output"
+                  rows="12"
+                  readonly
+                  placeholder="SGF output will appear here."
+                ></textarea>
+              </div>
             </div>
           </section>
         </div>
 
-        <div class="info-panel">
+        <aside class="info-panel">
           <p class="info-panel__label">Selected image</p>
           <p class="info-panel__name" id="selected-file-name">No file selected</p>
           <p class="info-panel__status" id="upload-status">
@@ -92,7 +164,27 @@
           <p class="info-panel__help" id="upload-help">
             Supported here: drag and drop, file picker, clipboard image paste.
           </p>
-        </div>
+
+          <div class="developer-panel">
+            <div class="developer-panel__header">
+              <div>
+                <p class="info-panel__label">Developer panel</p>
+                <p class="developer-panel__copy">
+                  Inspect intermediate stages and confidence signals.
+                </p>
+              </div>
+              <label class="toggle">
+                <input id="debug-toggle" type="checkbox" />
+                <span>Show</span>
+              </label>
+            </div>
+
+            <div class="developer-panel__body" id="debug-panel" hidden>
+              <pre class="debug-panel" id="debug-text">No pipeline run yet.</pre>
+              <div class="debug-stage-grid" id="debug-stage-grid"></div>
+            </div>
+          </div>
+        </aside>
       </section>
     </main>
 
