@@ -1,2 +1,3 @@
 # Image-to-position2
-just gonna start clean omg im losing my mind
+
+Minimal upload-and-preview shell for board images.

@@ -9,12 +9,12 @@
   <body>
     <main class="app-shell">
       <section class="hero">
-        <p class="eyebrow">Step 1 of 3</p>
-        <h1>Find the board outline</h1>
+        <p class="eyebrow">Image Upload</p>
+        <h1>Load a board image</h1>
         <p class="hero-copy">
-          Start by dropping in a screenshot or photo of a board position. The
-          image pipeline is split into modules so we can detect the board,
-          inspect the grid, and export SGF cleanly in the next steps.
+          Drop in a screenshot or photo of a board position. This stripped-down
+          view keeps only the upload and preview flow so the detection logic can
+          be rebuilt cleanly.
         </p>
       </section>
 
@@ -58,20 +58,8 @@
           <section class="board-panel" aria-labelledby="board-panel-title">
             <div class="board-panel__header">
               <div>
-                <p class="board-panel__eyebrow">Board outline</p>
-                <h2 id="board-panel-title">Preview and adjust the detected border</h2>
-              </div>
-
-              <div class="board-panel__actions">
-                <button class="board-button" id="auto-detect-button" type="button">
-                  Auto detect
-                </button>
-                <button class="board-button" id="manual-draw-button" type="button">
-                  Manual draw
-                </button>
-                <button class="board-button board-button--ghost" id="reset-outline-button" type="button">
-                  Reset
-                </button>
+                <p class="board-panel__eyebrow">Preview</p>
+                <h2 id="board-panel-title">Uploaded image</h2>
               </div>
             </div>
 
@@ -85,12 +73,11 @@
             </div>
 
             <div class="board-panel__footer">
-              <p class="board-panel__status" id="board-detection-status">
-                Upload an image to start board detection.
+              <p class="board-panel__status" id="preview-status">
+                Upload an image to preview it here.
               </p>
-              <p class="board-panel__help" id="board-detection-help">
-                Auto detect scans for repeated grid lines and expands outward.
-                Manual mode lets you place the four board corners yourself.
+              <p class="board-panel__help" id="preview-help">
+                The detection pipeline has been removed from this build.
               </p>
             </div>
           </section>
@@ -105,14 +92,6 @@
           <p class="info-panel__help" id="upload-help">
             Supported here: drag and drop, file picker, clipboard image paste.
           </p>
-
-          <p class="info-panel__label">Outline state</p>
-          <p class="info-panel__status" id="outline-summary">
-            No board outline detected yet.
-          </p>
-
-          <p class="info-panel__label">Detector debug</p>
-          <pre class="debug-panel" id="detector-debug">No detection debug yet.</pre>
         </div>
       </section>
     </main>

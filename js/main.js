@@ -8,15 +8,10 @@ const imageStore = createImageStore({
 });
 
 createBoardPreview({
-  autoDetectButton: document.querySelector("#auto-detect-button"),
   boardCanvas: document.querySelector("#board-canvas"),
-  debugElement: document.querySelector("#detector-debug"),
-  helpElement: document.querySelector("#board-detection-help"),
+  helpElement: document.querySelector("#preview-help"),
   imageStore,
-  manualDrawButton: document.querySelector("#manual-draw-button"),
-  resetOutlineButton: document.querySelector("#reset-outline-button"),
-  statusElement: document.querySelector("#board-detection-status"),
-  summaryElement: document.querySelector("#outline-summary"),
+  statusElement: document.querySelector("#preview-status"),
 });
 
 createUploadPanel({
