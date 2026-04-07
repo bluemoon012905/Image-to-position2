@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go Position to SGF</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <p class="eyebrow">Step 1 of 3</p>
+        <h1>Find the board outline</h1>
+        <p class="hero-copy">
+          Start by dropping in a screenshot or photo of a board position. The
+          image pipeline is split into modules so we can detect the board,
+          inspect the grid, and export SGF cleanly in the next steps.
+        </p>
+      </section>
+
+      <section class="workspace-panel">
+        <div class="workspace-main">
+          <div
+            class="upload-panel"
+            id="upload-panel"
+            role="button"
+            tabindex="0"
+            aria-describedby="upload-help upload-status"
+          >
+            <input
+              class="sr-only"
+              id="image-input"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif,image/heic,image/heif"
+            />
+
+            <div class="upload-panel__icon" aria-hidden="true">+</div>
+            <p class="upload-panel__title">Drag and drop a board image</p>
+            <p class="upload-panel__subtitle">
+              Click to browse or paste an image from your clipboard.
+            </p>
+
+            <button class="upload-panel__browse" id="browse-button" type="button">
+              Choose image
+            </button>
+
+            <label class="paste-box" for="paste-target">
+              <span class="paste-box__label">Paste image here</span>
+              <textarea
+                class="paste-box__input"
+                id="paste-target"
+                rows="3"
+                placeholder="Click here, then paste a screenshot or copied image."
+              ></textarea>
+            </label>
+          </div>
+
+          <section class="board-panel" aria-labelledby="board-panel-title">
+            <div class="board-panel__header">
+              <div>
+                <p class="board-panel__eyebrow">Board outline</p>
+                <h2 id="board-panel-title">Preview and adjust the detected border</h2>
+              </div>
+
+              <div class="board-panel__actions">
+                <button class="board-button" id="auto-detect-button" type="button">
+                  Auto detect
+                </button>
+                <button class="board-button" id="manual-draw-button" type="button">
+                  Manual draw
+                </button>
+                <button class="board-button board-button--ghost" id="reset-outline-button" type="button">
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <div class="board-canvas-wrap">
+              <canvas
+                class="board-canvas"
+                id="board-canvas"
+                width="960"
+                height="720"
+              ></canvas>
+            </div>
+
+            <div class="board-panel__footer">
+              <p class="board-panel__status" id="board-detection-status">
+                Upload an image to start board detection.
+              </p>
+              <p class="board-panel__help" id="board-detection-help">
+                Auto detect scans for repeated grid lines and expands outward.
+                Manual mode lets you place the four board corners yourself.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="info-panel">
+          <p class="info-panel__label">Selected image</p>
+          <p class="info-panel__name" id="selected-file-name">No file selected</p>
+          <p class="info-panel__status" id="upload-status">
+            Waiting for an image.
+          </p>
+          <p class="info-panel__help" id="upload-help">
+            Supported here: drag and drop, file picker, clipboard image paste.
+          </p>
+
+          <p class="info-panel__label">Outline state</p>
+          <p class="info-panel__status" id="outline-summary">
+            No board outline detected yet.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
