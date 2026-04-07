@@ -24,7 +24,7 @@ export function createImageStore({ fileNameElement, statusElement }) {
 
     fileNameElement.textContent = file.name;
     statusElement.textContent =
-      `Loaded from ${source}. Ready for preview.`;
+      `Loaded from ${source}. Ready for analysis.`;
     statusElement.classList.add("is-ready");
     emit();
   }
